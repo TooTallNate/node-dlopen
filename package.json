@@ -1,0 +1,34 @@
+{
+  "name": "dlopen",
+  "version": "0.0.0",
+  "description": "Native bindings to libuv's uv_dlopen() and friends",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/TooTallNate/node-dlopen.git"
+  },
+  "keywords": [
+    "c",
+    "dlopen",
+    "dlsym",
+    "dlclose",
+    "dlerror",
+    "libuv",
+    "dynamic",
+    "library"
+  ],
+  "author": "Nathan Rajlich <nathan@tootallnate.net> (http://n8.io/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TooTallNate/node-dlopen/issues"
+  },
+  "homepage": "https://github.com/TooTallNate/node-dlopen",
+  "dependencies": {
+    "bindings": "1.2.0",
+    "debug": "0.8.1",
+    "nan": "1.0.0"
+  }
+}
