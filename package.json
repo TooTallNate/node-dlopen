@@ -1,6 +1,6 @@
 {
   "name": "dlopen",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Native bindings to libuv's uv_dlopen() and friends",
   "main": "index.js",
   "scripts": {
