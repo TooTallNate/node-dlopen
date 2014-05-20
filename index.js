@@ -53,6 +53,7 @@ function Library (name) {
   // append the `ext` if necessary
   var ext = exports.ext[process.platform];
   if (name.substring(name.length - ext.length) !== ext) {
+    debug('appending dynamic lib suffix (%s)', ext, name);
     name += ext;
   }
   debug('library name', name);
@@ -78,6 +79,7 @@ function Library (name) {
  */
 
 Library.prototype.close = function () {
+  debug('close()');
   if (this.uv_lib_t) {
     bindings.dlclose(this.uv_lib_t);
     this._uv_lib_t = null;
@@ -96,6 +98,7 @@ Library.prototype.close = function () {
  */
 
 Library.prototype.get = function (name) {
+  debug('get()', name);
   var sym = new Buffer(bindings.sizeof_void_ptr);
   var r = bindings.dlsym(this.uv_lib_t, name, sym);
 
@@ -106,8 +109,9 @@ Library.prototype.get = function (name) {
     throw new Error(message);
   }
 
-  // add the symbol "name"
+  // add some debugging info
   sym.name = name;
+  sym.lib = this;
 
   return sym;
 };
