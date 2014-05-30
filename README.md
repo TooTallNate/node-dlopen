@@ -2,6 +2,7 @@ node-dlopen
 ===========
 ### Native bindings to libuv's uv_dlopen() and friends
 [![Build Status](https://secure.travis-ci.org/TooTallNate/node-dlopen.svg)](https://travis-ci.org/TooTallNate/node-dlopen)
+[![Build Status](https://ci.appveyor.com/api/projects/status/cip42c512j4k3b12)](https://ci.appveyor.com/project/TooTallNate/node-dlopen)
 
 
 This module offers access to libuv's `dlopen()`, `dlclose()`, `dlsym()` and
