@@ -47,14 +47,19 @@ exports.ext = {
 
 function Library (name) {
   if (!(this instanceof Library)) return new Library(name);
-  if (!name) throw new TypeError('A string library name is required');
 
-  // append the `ext` if necessary
-  var ext = exports.ext[process.platform];
-  if (name.substring(name.length - ext.length) !== ext) {
-    debug('appending dynamic lib suffix (%s)', ext, name);
-    name += ext;
+  if (name) {
+    // append the `ext` if necessary
+    var ext = exports.ext[process.platform];
+    if (name.substring(name.length - ext.length) !== ext) {
+      debug('appending dynamic lib suffix (%s)', ext, name);
+      name += ext;
+    }
+  } else {
+    // if no name was passed in then pass `null` to open the current process
+    name = null;
   }
+
   debug('library name', name);
   this.name = name;
 
