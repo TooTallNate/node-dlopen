@@ -1,6 +1,7 @@
 #include "uv.h"
 #include "node.h"
 #include "node_buffer.h"
+#include "node_version.h"
 #include "nan.h"
 
 namespace {
@@ -25,8 +26,16 @@ NAN_METHOD(Dlopen) {
   v8::Local<v8::Object> buf = args[1].As<v8::Object>();
 
   uv_lib_t *lib = reinterpret_cast<uv_lib_t *>(node::Buffer::Data(buf));
+  int r = 0;
 
-  int r = uv_dlopen(filename, lib);
+#if NODE_VERSION_AT_LEAST(0, 7, 9)
+  r = uv_dlopen(filename, lib);
+#else
+  uv_err_t err = uv_dlopen(filename, lib);
+  if (err.code != UV_OK) {
+    r = err.code;
+  }
+#endif
 
   NanReturnValue(NanNew<v8::Integer>(r));
 }
@@ -61,7 +70,15 @@ NAN_METHOD(Dlsym) {
   uv_lib_t *lib = reinterpret_cast<uv_lib_t *>(node::Buffer::Data(buf));
   void *sym = reinterpret_cast<void *>(node::Buffer::Data(sym_buf));
 
-  int r = uv_dlsym(lib, *name, &sym);
+  int r = 0;
+#if NODE_VERSION_AT_LEAST(0, 7, 9)
+  r = uv_dlsym(lib, *name, &sym);
+#else
+  uv_err_t err = uv_dlsym(lib, *name, &sym);
+  if (err.code != UV_OK) {
+    r = err.code;
+  }
+#endif
 
   NanReturnValue(NanNew<v8::Integer>(r));
 }
@@ -69,6 +86,8 @@ NAN_METHOD(Dlsym) {
 /**
  * dlerror()
  */
+
+#if NODE_VERSION_AT_LEAST(0, 7, 9)
 
 NAN_METHOD(Dlerror) {
   NanEscapableScope();
@@ -79,6 +98,8 @@ NAN_METHOD(Dlerror) {
 
   NanReturnValue(NanNew<v8::String>(uv_dlerror(lib)));
 }
+
+#endif
 
 } // anonymous namespace
 
@@ -91,6 +112,9 @@ void init (v8::Handle<v8::Object> target) {
   NODE_SET_METHOD(target, "dlopen", Dlopen);
   NODE_SET_METHOD(target, "dlclose", Dlclose);
   NODE_SET_METHOD(target, "dlsym", Dlsym);
+#if NODE_VERSION_AT_LEAST(0, 7, 9)
+  // libuv with node < 0.7.9 didn't have any dlerror() function
   NODE_SET_METHOD(target, "dlerror", Dlerror);
+#endif
 }
 NODE_MODULE(binding, init);

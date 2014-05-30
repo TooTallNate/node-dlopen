@@ -71,8 +71,9 @@ function Library (name) {
   debug('dlopen() result', r);
   if (0 !== r) {
     // error
-    var message = bindings.dlerror(this.uv_lib_t);
-    throw new Error(message);
+    throw new Error(bindings.dlerror ?
+        bindings.dlerror(this.uv_lib_t) :
+        'Unable to load shared library');
   }
 }
 
@@ -105,12 +106,13 @@ Library.prototype.get = function (name) {
   debug('get()', name);
   var sym = new Buffer(bindings.sizeof_void_ptr);
   var r = bindings.dlsym(this.uv_lib_t, name, sym);
-
+  debug('dlsym() result', r);
   if (0 !== r) {
     // error
-    var message = bindings.dlerror(this.uv_lib_t);
     sym = null;
-    throw new Error(message);
+    throw new Error(bindings.dlerror ?
+        bindings.dlerror(this.uv_lib_t) :
+        'Unable to load symbol');
   }
 
   // add some debugging info
