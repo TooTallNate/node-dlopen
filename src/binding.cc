@@ -12,12 +12,21 @@ namespace {
 NAN_METHOD(Dlopen) {
   NanEscapableScope();
 
-  v8::String::Utf8Value name(args[0]);
+  const char *filename;
+  if (args[0]->IsNull()) {
+    filename = NULL;
+  } else if (args[0]->IsString()) {
+    v8::String::Utf8Value name(args[0]);
+    filename = *name;
+  } else {
+    return NanThrowTypeError("a string filename, or null must be passed as the first argument");
+  }
+
   v8::Local<v8::Object> buf = args[1].As<v8::Object>();
 
   uv_lib_t *lib = reinterpret_cast<uv_lib_t *>(node::Buffer::Data(buf));
 
-  int r = uv_dlopen(*name, lib);
+  int r = uv_dlopen(filename, lib);
 
   NanReturnValue(NanNew<v8::Integer>(r));
 }
