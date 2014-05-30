@@ -13,13 +13,12 @@ var bindings = require('bindings')('binding');
 exports = module.exports = Library;
 
 /**
- * Re-export the *raw* dl functions.
+ * Re-export the *raw* dl bindings.
  */
 
-exports.dlopen = bindings.dlopen;
-exports.dlclose = bindings.dlclose;
-exports.dlsym = bindings.dlsym;
-exports.dlerror = bindings.dlerror;
+Object.keys(bindings).forEach(function (key) {
+  exports[key] = bindings[key];
+});
 
 /**
  * Map of `process.platform` values to their corresponding
