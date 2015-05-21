@@ -106,8 +106,8 @@ NAN_METHOD(Dlerror) {
 void init (v8::Handle<v8::Object> target) {
   NanScope();
 
-  target->Set(NanNew<v8::String>("sizeof_uv_lib_t"), NanNew<v8::Integer>(sizeof(uv_lib_t)));
-  target->Set(NanNew<v8::String>("sizeof_void_ptr"), NanNew<v8::Integer>(sizeof(void *)));
+  target->Set(NanNew<v8::String>("sizeof_uv_lib_t"), NanNew<v8::Uint32>(static_cast<uint32_t>(sizeof(uv_lib_t))));
+  target->Set(NanNew<v8::String>("sizeof_void_ptr"), NanNew<v8::Uint32>(static_cast<uint32_t>(sizeof(void *))));
 
   NODE_SET_METHOD(target, "dlopen", Dlopen);
   NODE_SET_METHOD(target, "dlclose", Dlclose);
