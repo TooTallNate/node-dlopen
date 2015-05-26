@@ -26,15 +26,15 @@ Object.keys(bindings).forEach(function (key) {
  */
 
 exports.ext = {
-  linux:   '.so',
-  linux2:  '.so',
-  sunos:   '.so',
-  solaris: '.so',
-  freebsd: '.so',
-  openbsd: '.so',
-  darwin:  '.dylib',
-  mac:     '.dylib',
-  win32:   '.dll'
+  linux:   ['.so'],
+  linux2:  ['.so'],
+  sunos:   ['.so'],
+  solaris: ['.so'],
+  freebsd: ['.so'],
+  openbsd: ['.so'],
+  darwin:  ['.dylib', '.bundle', '.framework'],
+  mac:     ['.dylib', '.bundle', '.framework'],
+  win32:   ['.dll']
 };
 
 /**
@@ -50,10 +50,17 @@ function Library (name) {
 
   if (name) {
     // append the `ext` if necessary
-    var ext = exports.ext[process.platform];
-    if (name.substring(name.length - ext.length) !== ext) {
-      debug('appending dynamic lib suffix (%s)', ext, name);
-      name += ext;
+    var exts = exports.ext[process.platform];
+    var mustAppendExt = true;
+    exts.forEach(function(ext) {
+      if (name.substring(name.length - ext.length) === ext) {
+        mustAppendExt = false;
+      }
+    });
+
+    if (mustAppendExt) {
+      debug('appending dynamic lib suffix (%s)', exts[0], name);
+      name += exts[0];
     }
   } else {
     // if no name was passed in then pass `null` to open the current process
