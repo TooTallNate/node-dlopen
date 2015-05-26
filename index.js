@@ -45,8 +45,8 @@ exports.ext = {
  * @api private
  */
 
-function Library (name) {
-  if (!(this instanceof Library)) return new Library(name);
+function Library (name, noExtension) {
+  if (!(this instanceof Library)) return new Library(name, noExtension);
 
   if (name) {
     // append the `ext` if necessary
@@ -58,7 +58,7 @@ function Library (name) {
       }
     });
 
-    if (mustAppendExt) {
+    if (!noExtension && mustAppendExt) {
       debug('appending dynamic lib suffix (%s)', exts[0], name);
       name += exts[0];
     }
